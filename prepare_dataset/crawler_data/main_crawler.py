@@ -1,3 +1,7 @@
+"""
+AUTHOR: NTH
+Base one: https://github.com/D2KLab/FaceRec
+"""
 import argparse
 import logging
 import os
@@ -37,7 +41,7 @@ def main(keyword, max_num=50, project='general', discard_multi_face=False, debug
     google_crawler.crawl(keyword=keyword, offset=0, max_num=max_num, filters=dict(type='photo'),
                          min_size=(200, 200), max_size=None, file_idx_offset=0)
 
-    detector = FaceDetector(detect_multiple_faces=True)
+    detector = FaceDetector(detect_multiple_faces=True, image_size=160)  # resize image
 
     for f in sorted(os.listdir(image_dir)):
         filename = f.rsplit('.', 1)[0]
