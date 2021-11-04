@@ -51,7 +51,7 @@ def main(keyword, max_num=50, project='general', discard_multi_face=False, debug
         if discard_multi_face and len(extracted_faces) > 1:
             continue
         for i, face in enumerate(extracted_faces):
-            output_filename = os.path.join(al_image_dir, '%s_%d.png' % (filename, i))
+            output_filename = os.path.join(al_image_dir, '%s_%d.jpg' % (filename, i))
             cv2.imwrite(output_filename, face)
 
     end = time.time()
@@ -60,7 +60,7 @@ def main(keyword, max_num=50, project='general', discard_multi_face=False, debug
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-k', "--keyword", type=str, default="Messi",
+    parser.add_argument('-k', "--keyword", type=str, default="Churchill Winston",
                         help='Keyword for searching')
     parser.add_argument("--max_num", type=int, default=20,
                         help='Max number of images to download')
