@@ -1,2 +1,0 @@
-BATCH_SIZE = 10
-BINARY_IMG = True
