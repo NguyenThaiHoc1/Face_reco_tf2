@@ -9,15 +9,20 @@ TRAIN_RECORD_PATH = DATASET_PATH / 'fuji1t_bin_ver2.tfrecords'
 
 TEST_RECORD_PATH = DATASET_PATH / ''
 
+CHECKPOINT_PATH = BASE_DIR / 'checkpoint'
+
+LOGS_PATH = BASE_DIR / 'logs'
+
 # Training
 INPUT_SIZE = 112
 CHANNELS = 3
-NUM_CLASSES = 10
 TYPE_HEAD = 'ArcHead'
 TYPE_BACKBONE = 'ResNet50'
 MARGIN = 0.5
 LOGIST_SCALE = 64
 EMBEDDING_SHAPE = 512
+NUM_CLASSES = 2
+NUM_SAMPLES = 35
 
 # Hyperparamater training
 W_DECAY = 5e-4

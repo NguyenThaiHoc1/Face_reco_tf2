@@ -39,3 +39,15 @@ def write_data_tensorboard(writter, epochs, max_epochs, each_step, steps_per_epo
         tf.summary.scalar('loss/pred loss', pred_loss, step=each_step)
         tf.summary.scalar('loss/reg loss', reg_loss, step=each_step)
         tf.summary.scalar('learning rate', optimizer.lr, step=each_step)
+
+
+def load_checkpoint(path_checkpoint, model, steps_per_epoch):
+    ckpt_path = tf.train.latest_checkpoint(path_checkpoint)
+    if ckpt_path is not None:
+        print('[*] load ckpt from {}.'.format(ckpt_path))
+        model.load_weights(ckpt_path)
+        epochs, steps = get_ckpt_inf(ckpt_path=ckpt_path, steps_per_epoch=steps_per_epoch)
+    else:
+        print('[*] training from scratch.')
+        epochs, steps = 1, 1
+    return epochs, steps
