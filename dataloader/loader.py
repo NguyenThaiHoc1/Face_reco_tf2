@@ -44,9 +44,10 @@ def _parse_tfrecord(binary_img=False, is_ccrop=False):
 
 
 class DataLoader(object):
-    def __init__(self, data_path_train,
+    def __init__(self, data_path_train, data_path_test,
                  batch_size, binary_img, num_samples):
         self.data_path_train = data_path_train
+        self.data_path_test = data_path_test
         self.batch_size = batch_size
         self.binary_img = binary_img
         self.num_samples = num_samples
@@ -71,6 +72,12 @@ class DataLoader(object):
     @property
     def train(self):
         return self.make_dataset(tfrecord_name=self.data_path_train,
+                                 batchsize=self.batch_size,
+                                 binary_img=self.binary_img)
+
+    @property
+    def test(self):
+        return self.make_dataset(tfrecord_name=self.data_path_test,
                                  batchsize=self.batch_size,
                                  binary_img=self.binary_img)
 

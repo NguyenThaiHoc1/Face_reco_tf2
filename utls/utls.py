@@ -51,3 +51,8 @@ def load_checkpoint(path_checkpoint, model, steps_per_epoch):
         print('[*] training from scratch.')
         epochs, steps = 1, 1
     return epochs, steps
+
+
+def save_weight(model, path_dir):
+    print('[*] save ckpt file!')
+    model.save_weights(path_dir)

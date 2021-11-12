@@ -7,6 +7,7 @@ from utls.utls import load_checkpoint
 if __name__ == '__main__':
     # DONE
     loader = DataLoader(data_path_train=settings.TRAIN_RECORD_PATH,
+                        data_path_test=settings.TRAIN_RECORD_PATH,
                         batch_size=settings.BATCH_SIZE,
                         binary_img=settings.BINARY_IMG,
                         num_samples=settings.NUM_SAMPLES)
@@ -28,7 +29,8 @@ if __name__ == '__main__':
                            max_epochs=settings.EPOCHS,
                            steps=steps,
                            learning_rate=settings.LEARNING_RATE,
-                           logs=str(settings.LOGS_PATH))
+                           logs=str(settings.LOGS_PATH),
+                           saveweight_path=str(settings.CHECKPOINT_PATH / settings.SUB_NAME))
 
     face_trainer.training()
     print("Done")

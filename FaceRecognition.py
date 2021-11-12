@@ -1,10 +1,16 @@
-import tensorflow as tf
 import os
+
+import tensorflow as tf
+from tensorflow.keras.metrics import Mean
+from tqdm import tqdm
+
 from loss.losses import SoftmaxLoss
+from utls.utls import save_weight
 
 
 class FaceRec(object):
-    def __init__(self, model, loader, current_epochs, max_epochs, steps, learning_rate, logs):
+    def __init__(self, model, loader, current_epochs, max_epochs, steps,
+                 learning_rate, logs, saveweight_path):
         self.max_epochs = max_epochs
         self.current_epochs = current_epochs
         self.steps = steps
@@ -13,6 +19,7 @@ class FaceRec(object):
 
         self.lr = learning_rate
         self.logs = logs
+        self.saveweight_path = saveweight_path
 
         # -------- setting up hyper parameter -------
         self.optimizer = None
@@ -34,6 +41,9 @@ class FaceRec(object):
         summary_writer = tf.summary.create_file_writer(path_writter)
         return summary_writer
 
+    def _setup_metrics_vali(self, names):
+        self.metrics = {name: Mean() for name in names}
+
     @tf.function
     def _training_step(self, iter_train):
         inputs, labels = next(iter_train)
@@ -48,9 +58,23 @@ class FaceRec(object):
 
         return total_loss, pred_loss, reg_loss, self.optimizer.lr
 
-    @tf.function
     def _testing_step(self, iter_test):
-        raise NotImplementedError
+        for index in tqdm(range(self.loader.steps_per_epoch), f'* Validate Epoch {self.current_epochs + 1}'):
+            inputs, labels = next(iter_test)
+
+            dict_values = {}
+            logist = self.model(inputs)
+            reg_loss = tf.reduce_sum(self.model.losses)  # regularization_loss
+            pred_loss = self.loss_fn(labels, logist)
+            total_loss = pred_loss + reg_loss
+
+            dict_values['reg_loss'] = reg_loss
+            dict_values['pred_loss'] = pred_loss
+            dict_values['total_loss'] = total_loss
+
+            metric_values = {name: float(value) for name, value in dict_values.items() if value is not None}
+            for name, value in metric_values.items():
+                self.metrics[name].update_state(value)
 
     def training(self):
         self.optimizer = self._setup_optimizer()
@@ -59,8 +83,11 @@ class FaceRec(object):
         self.writter_vali = self._setup_writter(path=os.path.join(self.logs, 'validate'))
 
         train_dataset = iter(self.loader.train)
+        validate_dataset = iter(self.loader.test)
 
         while self.current_epochs < self.max_epochs:
+            self._setup_metrics_vali(names=['reg_loss', 'pred_loss', 'total_loss'])
+
             print(f'Epoch: {self.current_epochs}')
             total_loss, pred_loss, reg_loss, lr_training = self._training_step(iter_train=train_dataset)
 
@@ -72,6 +99,14 @@ class FaceRec(object):
                                       total_loss.numpy(),
                                       self.learning_rate.numpy()))
 
+                self._testing_step(iter_test=validate_dataset)
+
+                # saving weights
+                name_save = 'e_{}_b_{}.ckpt'.format(self.current_epochs, self.steps % self.loader.steps_per_epoch)
+                path_save = os.path.join(self.saveweight_path, name_save)
+                save_weight(self.model, path_dir=path_save)
+
+                # writter tensorboard
                 with self.writter_train.as_default():
                     tf.summary.scalar(
                         'loss/total loss', total_loss, step=self.steps)
@@ -81,6 +116,14 @@ class FaceRec(object):
                         'loss/reg loss', reg_loss, step=self.steps)
                     tf.summary.scalar(
                         'learning rate', lr_training, step=self.steps)
+
+                with self.writter_vali.as_default():
+                    tf.summary.scalar(
+                        'loss/total loss', self.metrics['total_loss'].result(), step=self.steps)
+                    tf.summary.scalar(
+                        'loss/pred loss', self.metrics['pred_loss'].result(), step=self.steps)
+                    tf.summary.scalar(
+                        'loss/reg loss', self.metrics['reg_loss'].result(), step=self.steps)
 
             self.current_epochs = self.steps // self.loader.steps_per_epoch + 1
             self.steps += 1
