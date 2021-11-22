@@ -1,8 +1,12 @@
-from config import settings
+import ssl
+
 from FaceRecognition import FaceRec
-from dataloader.loader import DataLoader
 from architecture.arcface_model import ArcFaceModel
+from config import settings
+from dataloader.loader import DataLoader
 from utls.utls import load_checkpoint
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 if __name__ == '__main__':
     # DONE
@@ -16,7 +20,7 @@ if __name__ == '__main__':
     model = ArcFaceModel(size=settings.INPUT_SIZE, channels=settings.CHANNELS, num_classes=settings.NUM_CLASSES,
                          margin=settings.MARGIN, logist_scale=settings.LOGIST_SCALE,
                          embd_shape=settings.EMBEDDING_SHAPE, w_decay=settings.W_DECAY,
-                         head_type='ArcHead', backbone_type='ResNet50', use_pretrain=False,
+                         head_type='ArcHead', backbone_type='ResNet50', use_pretrain=True,
                          training=True, name='arcface_model')
 
     # Load checkpoint

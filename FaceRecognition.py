@@ -44,7 +44,6 @@ class FaceRec(object):
     def _setup_metrics_vali(self, names):
         self.metrics = {name: Mean() for name in names}
 
-    @tf.function
     def _training_step(self, iter_train):
         inputs, labels = next(iter_train)
         with tf.GradientTape() as tape:
@@ -88,7 +87,6 @@ class FaceRec(object):
         while self.current_epochs < self.max_epochs:
             self._setup_metrics_vali(names=['reg_loss', 'pred_loss', 'total_loss'])
 
-            print(f'Epoch: {self.current_epochs}')
             total_loss, pred_loss, reg_loss, lr_training = self._training_step(iter_train=train_dataset)
 
             if self.steps % 5 == 0:
@@ -99,12 +97,7 @@ class FaceRec(object):
                                       total_loss.numpy(),
                                       self.learning_rate.numpy()))
 
-                self._testing_step(iter_test=validate_dataset)
-
-                # saving weights
-                name_save = 'e_{}_b_{}.ckpt'.format(self.current_epochs, self.steps % self.loader.steps_per_epoch)
-                path_save = os.path.join(self.saveweight_path, name_save)
-                save_weight(self.model, path_dir=path_save)
+                # self._testing_step(iter_test=validate_dataset)
 
                 # writter tensorboard
                 with self.writter_train.as_default():
@@ -117,13 +110,20 @@ class FaceRec(object):
                     tf.summary.scalar(
                         'learning rate', lr_training, step=self.steps)
 
-                with self.writter_vali.as_default():
-                    tf.summary.scalar(
-                        'loss/total loss', self.metrics['total_loss'].result(), step=self.steps)
-                    tf.summary.scalar(
-                        'loss/pred loss', self.metrics['pred_loss'].result(), step=self.steps)
-                    tf.summary.scalar(
-                        'loss/reg loss', self.metrics['reg_loss'].result(), step=self.steps)
+                # with self.writter_vali.as_default():
+                #     tf.summary.scalar(
+                #         'loss/total loss', self.metrics['total_loss'].result(), step=self.steps)
+                #     tf.summary.scalar(
+                #         'loss/pred loss', self.metrics['pred_loss'].result(), step=self.steps)
+                #     tf.summary.scalar(
+                #         'loss/reg loss', self.metrics['reg_loss'].result(), step=self.steps)
 
-            self.current_epochs = self.steps // self.loader.steps_per_epoch + 1
+            if self.steps % 1000:
+                # saving weights
+                name_save = 'e_{}_b_{}.ckpt'.format(self.current_epochs, self.steps % self.loader.steps_per_epoch)
+                path_save = os.path.join(self.saveweight_path, name_save)
+                save_weight(self.model, path_dir=path_save)
+
             self.steps += 1
+            self.current_epochs = self.steps // self.loader.steps_per_epoch + 1
+

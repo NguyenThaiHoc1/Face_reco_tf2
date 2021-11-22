@@ -1,3 +1,5 @@
 .idea
 prepare_dataset/crawler_data/data/
 dataset
+logs
+checkpoint

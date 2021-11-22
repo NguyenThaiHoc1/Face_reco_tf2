@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATASET_PATH = BASE_DIR / 'dataset'
 
-TRAIN_RECORD_PATH = DATASET_PATH / 'fuji1t_bin_ver2.tfrecords'
+TRAIN_RECORD_PATH = DATASET_PATH / 'lfw_dataset.tfrecords'
 
 TEST_RECORD_PATH = DATASET_PATH / ''
 
@@ -22,8 +22,9 @@ SUB_NAME = 'arc_res50'
 MARGIN = 0.5
 LOGIST_SCALE = 64
 EMBEDDING_SHAPE = 512
-NUM_CLASSES = 2
-NUM_SAMPLES = 35
+
+NUM_CLASSES = 5749
+NUM_SAMPLES = 14695
 
 # Hyperparamater training
 W_DECAY = 5e-4
