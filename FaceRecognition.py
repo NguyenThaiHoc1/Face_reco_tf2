@@ -118,7 +118,7 @@ class FaceRec(object):
                 #     tf.summary.scalar(
                 #         'loss/reg loss', self.metrics['reg_loss'].result(), step=self.steps)
 
-            if self.steps % 1000:
+            if self.steps % 1000 == 0:
                 # saving weights
                 name_save = 'e_{}_b_{}.ckpt'.format(self.current_epochs, self.steps % self.loader.steps_per_epoch)
                 path_save = os.path.join(self.saveweight_path, name_save)
