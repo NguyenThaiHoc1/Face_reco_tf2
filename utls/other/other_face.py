@@ -1,8 +1,8 @@
 import os
 import re
 
-import numpy as np
 import cv2
+import numpy as np
 from PIL import Image
 
 
@@ -91,6 +91,11 @@ def load_gray(file):
     # Using PIL instead of cv2.imread because the latter is not working with GIF
     img = np.asarray(Image.open(file).convert('L'))
     return cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+
+
+def load_rgb(file):
+    img = np.asarray(Image.open(file))
+    return cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
 
 def fetch_dataset(directory):

@@ -3,8 +3,9 @@ import logging
 import os
 import sys
 import time
-import tqdm
+
 import cv2
+import tqdm
 
 from utls.facedetector.FaceDetector import FaceDetector
 from utls.other import other_face as utils
@@ -15,7 +16,7 @@ logger = logging.getLogger('crawler')
 def main(project='general', discard_multi_face=False):
     image_dir = os.path.expanduser(os.path.join('data/training_img/', project))
 
-    al_image_dir = os.path.expanduser(os.path.join('data/training_img_aligned/', project))
+    al_image_dir = os.path.expanduser(os.path.join('data/training_img_aligned/', 'lfw_rgb'))
     os.makedirs(al_image_dir, exist_ok=True)
 
     start = time.time()
@@ -29,7 +30,7 @@ def main(project='general', discard_multi_face=False):
 
         for f in sorted(os.listdir(src_path_abs)):
             filename = f.rsplit('.', 1)[0]
-            image = utils.load_gray(os.path.join(src_path_abs, f))
+            image = utils.load_gray(os.path.join(src_path_abs, f))  # cái này mình nên thay đổi RGB
             extracted_faces = detector.extract(image)
             if discard_multi_face and len(extracted_faces) > 1:
                 continue

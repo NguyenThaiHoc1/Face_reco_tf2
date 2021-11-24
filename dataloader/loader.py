@@ -27,7 +27,7 @@ def _parse_tfrecord(binary_img=False, is_ccrop=False):
             }
 
             data = tf.io.parse_single_example(tfrecord, features=features)
-            data_train = tf.image.decode_jpeg(data['image/encoded'], channels=3)
+            data_train = tf.image.decode_jpeg(data['image/encoded'], channels=3)  # read file RGB read from TF
         else:
             raise NotImplementedError
 

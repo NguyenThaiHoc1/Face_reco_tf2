@@ -29,8 +29,15 @@ NUM_SAMPLES = 14695
 # Hyperparamater training
 W_DECAY = 5e-4
 EPOCHS = 100
-LEARNING_RATE = 1e-5
+LEARNING_RATE = 0.01
 
 # DATALOADER
 BATCH_SIZE = 32
 BINARY_IMG = True
+
+
+# -------- test algin
+
+ONET_PATH = BASE_DIR / 'utls' / 'faceevoLVe' / 'onet.npy'
+PNET_PATH = BASE_DIR / 'utls' / 'faceevoLVe' / 'pnet.npy'
+RNET_PATH = BASE_DIR / 'utls' / 'faceevoLVe' / 'rnet.npy'
