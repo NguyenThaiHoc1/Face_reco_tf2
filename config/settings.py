@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATASET_PATH = BASE_DIR / 'dataset'
 
-TRAIN_RECORD_PATH = DATASET_PATH / 'lfw_dataset.tfrecords'
+TRAIN_RECORD_PATH = DATASET_PATH / 'lfw_dataset_rgb.tfrecords'
 
 TEST_RECORD_PATH = DATASET_PATH / ''
 
@@ -41,3 +41,7 @@ BINARY_IMG = True
 ONET_PATH = BASE_DIR / 'utls' / 'faceevoLVe' / 'onet.npy'
 PNET_PATH = BASE_DIR / 'utls' / 'faceevoLVe' / 'pnet.npy'
 RNET_PATH = BASE_DIR / 'utls' / 'faceevoLVe' / 'rnet.npy'
+
+# PAIR PATH
+TEST_PAIR_PATH = BASE_DIR / 'prepare_dataset' / 'crawler_data' / 'data' / 'validate' / 'lfw' / 'lfw_standard.txt'
+DATA_DIR = BASE_DIR / 'prepare_dataset' / 'crawler_data' / 'data' / 'training_img_aligned' / 'lfw_rgb'
